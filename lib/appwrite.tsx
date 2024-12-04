@@ -45,13 +45,15 @@ export async function createUser(email, password, username) {
     const newUser = await databases.createDocument(
       config.databaseId,
       config.userCollectionId,
-      ID.unique({
-        accountID: newAccount.$id,
+      ID.unique(),
+      {
+        accountId: newAccount.$id,
         email,
         username,
         avatar: avatarUrl,
-      })
+      }
     );
+    console.log("New user created");
     return newUser;
   } catch (error) {
     console.log(error);
@@ -61,8 +63,19 @@ export async function createUser(email, password, username) {
 
 export async function signIn(email, password) {
   try {
-    const session = await account.createEmailSession(email, password);
+    const session = await account.createEmailPasswordSession(email, password);
+    console.log("created session");
     return session;
+  } catch (error) {
+    console.log(error);
+    throw new Error(error);
+  }
+}
+
+export async function logOut() {
+  try {
+    const result = await account.deleteSession("current");
+    console.log(result);
   } catch (error) {
     throw new Error(error);
   }
@@ -71,14 +84,16 @@ export async function signIn(email, password) {
 export const getCurrentUser = async () => {
   try {
     const currentAccount = await account.get();
+    console.log(currentAccount);
 
     if (!currentAccount) throw Error;
 
-    const currentUser = await database.listDocuments(
+    const currentUser = await databases.listDocuments(
       config.databaseId,
       config.userCollectionId,
       [Query.equal("accountId", currentAccount.$id)]
     );
+    console.log(currentUser);
 
     if (!currentUser) throw Error;
 

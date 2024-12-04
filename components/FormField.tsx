@@ -1,4 +1,5 @@
-import { View, Text, TextInput, TouchableOpacity, Image } from "react-native";
+import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { Image } from "expo-image";
 import React, { useState } from "react";
 
 import { icons } from "@/constants";
@@ -30,8 +31,8 @@ const FormField = ({
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
             <Image
               source={!showPassword ? icons.eye : icons.eyeHide}
-              className="w-6 h-6"
-              resizeMode="contain"
+              style={{ width: 20, height: 20 }}
+              contentFit="contain"
             />
           </TouchableOpacity>
         )}

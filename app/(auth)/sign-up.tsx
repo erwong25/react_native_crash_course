@@ -1,4 +1,6 @@
-import { View, Text, ScrollView, Image, Alert } from "react-native";
+import { View, Text, ScrollView } from "react-native";
+import { alert } from "@/utils/alert";
+import { Image } from "expo-image";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -6,23 +8,23 @@ import { images } from "../../constants";
 import FormField from "@/components/FormField";
 import CustomButton from "@/components/CustomButton";
 import { Link, router } from "expo-router";
-import { signIn } from "../../lib/appwrite";
+import { signIn, createUser, logOut } from "../../lib/appwrite";
 
 const SignUp = () => {
   const [form, setForm] = useState({ username: "", email: "", password: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const submit = async () => {
-    if (!form.email || !form.password) {
-      Alert.alert("Error", "Please fill in all the fields");
+    if (!form.username || !form.email || !form.password) {
+      alert("Error", "Please fill in all the fields");
     }
     setIsSubmitting(true);
 
     try {
-      await signIn(form.email, form.password);
+      const result = await createUser(form.email, form.password, form.username);
       router.replace("/home");
     } catch (error) {
-      Alert.alert("Error", error.message);
+      alert("Error", error.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -34,7 +36,7 @@ const SignUp = () => {
         <View className="w-full justify-center min-h-[85vh] px-4 my-6">
           <Image
             source={images.logo}
-            resizeMode="contain"
+            contentFit="contain"
             className="w-[115px] h-[35px]"
           />
           <Text className="text-2xl text-white text-semibold mt-10 font-psemibold">

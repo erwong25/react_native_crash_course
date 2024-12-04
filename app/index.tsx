@@ -1,15 +1,21 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, Image } from "react-native";
-import { Redirect, router } from "expo-router";
+import { StyleSheet, Text, View } from "react-native";
+import { Image } from "expo-image";
+import { Redirect, router, Link } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "react-native-gesture-handler";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-url-polyfill/auto";
+import { useGlobalContext } from "@/context/GlobalProvider";
 
 import { images } from "../constants";
 import CustomButton from "@/components/CustomButton";
 
 export default function App() {
+  const { isLoading, isLoggedIn, user } = useGlobalContext();
+  console.log("isLoggedIn", isLoggedIn, user);
+  if (!isLoading && isLoggedIn) return <Redirect href={"/home"} />;
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaView className="bg-primary h-full">
@@ -17,24 +23,19 @@ export default function App() {
           <View className="w-full justify-center items-center h-[85vh] px-4">
             <Image
               source={images.logo}
-              className="w-[130px] h-[84px]"
-              resizeMode="contain"
+              style={{ width: 130, height: 84 }}
+              contentFit="contain"
             />
             <Image
               source={images.cards}
-              className="max-w-[380px] max-h-[300px] w-full"
-              resizeMode="contain"
+              style={{ width: 380, height: 300 }}
+              contentFit="contain"
             />
             <View className="relative mt-5">
               <Text className="text-3xl text-white font-bold text-center">
                 Discover Endless Possibilities with{" "}
                 <Text className="text-secondary-200">Aora</Text>
               </Text>
-              <Image
-                source={images.path}
-                className="w-[136px] h-[15px] absolute bottom-2 right-8"
-                resizeMode="contain"
-              />
             </View>
             <Text className="text-sm font-pregular text-gray-100 mt-7 text-center">
               Where creativity meets innovation: embark on a journey of
@@ -45,6 +46,9 @@ export default function App() {
               handlePress={() => router.push("/sign-in")}
               containerStyles="w-full mt-7"
             />
+            <Link href="/profile" className="text-white">
+              profile
+            </Link>
           </View>
         </ScrollView>
         <StatusBar backgroundColor="#161622" style="light" />
