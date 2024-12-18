@@ -137,3 +137,29 @@ export async function getLatestPosts() {
     throw new Error(error);
   }
 }
+
+export async function searchPosts(query) {
+  try {
+    const posts = await databases.listDocuments(
+      config.databaseId,
+      config.videoCollectionId,
+      [Query.contains("title", query)]
+    );
+    return posts.documents;
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
+export async function getUserPosts(userId) {
+  try {
+    const posts = await databases.listDocuments(
+      config.databaseId,
+      config.videoCollectionId,
+      [Query.equal("creator", userId)]
+    );
+    return posts.documents;
+  } catch (error) {
+    throw new Error(error);
+  }
+}
