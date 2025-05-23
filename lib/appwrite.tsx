@@ -3,6 +3,7 @@ import {
   Avatars,
   Client,
   Databases,
+  Models,
   Query,
 } from "react-native-appwrite";
 import { ID } from "react-native-appwrite";
@@ -39,7 +40,11 @@ const account = new Account(client);
 const avatars = new Avatars(client);
 const databases = new Databases(client);
 
-export async function createUser(email, password, username) {
+export async function createUser(
+  email,
+  password,
+  username
+): Promise<Models.Document> {
   try {
     const newAccount = await account.create(
       ID.unique(),
